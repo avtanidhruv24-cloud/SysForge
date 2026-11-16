@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "SYSFORGE System Programming Lab"
+description = "An interactive system programming laboratory that traces educational assembly source code through analysis, assembly, linking, loading, memory, AI explanation, and execution-ready views."
+version = "1.0.0"
+id = "artifacts/sysforge"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19972
+
+[services.development]
+run = "pnpm --filter @workspace/sysforge run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/sysforge", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/sysforge/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19972"
+BASE_PATH = "/"

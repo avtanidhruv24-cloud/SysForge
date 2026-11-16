@@ -1,0 +1,19 @@
+# ============================================================================
+# SysForge Backend — Python dependencies
+# ============================================================================
+# Install:  pip install -r requirements.txt
+# Dev only: pip install -r requirements.txt -r requirements-dev.txt
+# ============================================================================
+
+# Web framework
+fastapi==0.115.5
+
+# ASGI server (includes websockets, http-tools extras)
+uvicorn[standard]==0.32.1
+
+# Data validation and serialisation
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# Environment variable loading
+python-dotenv==1.0.1

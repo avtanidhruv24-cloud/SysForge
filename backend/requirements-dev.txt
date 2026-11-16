@@ -1,0 +1,16 @@
+# ============================================================================
+# SysForge Backend — development / test dependencies
+# ============================================================================
+# Install alongside requirements.txt:
+#   pip install -r requirements.txt -r requirements-dev.txt
+# ============================================================================
+
+# Test framework
+pytest==8.3.4
+pytest-asyncio==0.24.0
+
+# Async HTTP client used for FastAPI TestClient (httpx-based)
+httpx==0.28.0
+
+# Async primitives (needed by pytest-asyncio)
+anyio==4.7.0

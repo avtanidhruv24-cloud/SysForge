@@ -1,0 +1,1016 @@
+# SYSFORGE — FINAL FRONTEND REFINEMENT
+
+You are working on the existing **SYSFORGE — Intelligent Integrated System Programming Toolchain** frontend.
+
+The current frontend is already substantially designed and implemented.
+
+## VERY IMPORTANT
+
+**DO NOT rebuild the application from scratch.**
+
+**DO NOT replace the existing UI design.**
+
+**DO NOT rewrite the project using a different framework.**
+
+**DO NOT implement the System Programming backend algorithms.**
+
+Your task is to perform a **focused refinement pass** on the existing frontend.
+
+Preserve the existing:
+
+* React/Vite architecture
+* TypeScript
+* Tailwind styling
+* Graphite Electric visual identity
+* Existing routing/navigation
+* Existing components wherever possible
+* Existing API abstraction
+* Existing responsive behavior
+* Existing animations that are already working
+
+Only make the changes described below and any small supporting changes required to implement them correctly.
+
+---
+
+# PROJECT CONTEXT
+
+SysForge is an interactive System Programming laboratory.
+
+Its purpose is to visually demonstrate:
+
+SOURCE CODE
+↓
+LEXICAL ANALYSIS
+↓
+SYNTAX ANALYSIS
+↓
+MACRO PROCESSOR
+↓
+ASSEMBLER PASS-I
+↓
+SYMTAB / LITTAB / POOLTAB / INTERMEDIATE CODE
+↓
+ASSEMBLER PASS-II
+↓
+OBJECT / MACHINE CODE
+↓
+LINKER
+↓
+LOADER
+↓
+MEMORY MAP
+↓
+AI ANALYSIS
+↓
+AI OPTIMIZATION
+↓
+PROGRAM EXECUTION
+↓
+PROGRAM OUTPUT
+↓
+FINAL RESULT
+
+The backend algorithms will be implemented later using FastAPI and a deterministic System Programming Engine.
+
+Therefore:
+
+**The frontend must remain API-ready and must never fabricate compiler, assembler, linker, loader, optimization, or execution results.**
+
+---
+
+# CHANGE 1 — FIX THE EXECUTION CPU MODEL
+
+## Current problem
+
+The current Execution screen uses generic CPU terminology such as:
+
+* PC
+* SP
+* ACC
+* FLAGS
+
+This does not match our educational assembly language.
+
+SysForge uses the following registers:
+
+AREG
+BREG
+CREG
+DREG
+
+and the following condition codes:
+
+LT
+LE
+EQ
+GT
+GE
+ANY
+
+## Required change
+
+Replace the generic CPU register display with the SysForge educational CPU model.
+
+The execution screen should display:
+
+### Program Counter
+
+PC
+
+### Registers
+
+AREG
+BREG
+CREG
+DREG
+
+### Condition Code
+
+LT
+LE
+EQ
+GT
+GE
+ANY
+
+You may display the current condition code as a single value, for example:
+
+Condition Code: EQ
+
+Do not display:
+
+SP
+ACC
+FLAGS
+
+unless they are specifically required internally by the future VM implementation.
+
+The UI should visually resemble an educational virtual CPU/debugger.
+
+Example:
+
+┌────────────────────────────────────┐
+│ VIRTUAL CPU                        │
+├────────────────────────────────────┤
+│ PC        104                      │
+│                                    │
+│ AREG      5                        │
+│ BREG      1                        │
+│ CREG      0                        │
+│ DREG      0                        │
+│                                    │
+│ CONDITION CODE                     │
+│ EQ                                 │
+└────────────────────────────────────┘
+
+These values are UI placeholders only.
+
+Do NOT hard-code them as real execution results.
+
+The future backend will provide the actual values.
+
+---
+
+# CHANGE 2 — FIX GUIDED MODE KEYBOARD SHORTCUTS
+
+The current guided mode uses J/K-style navigation.
+
+The required primary keyboard controls are:
+
+ArrowRight → Next stage
+
+Enter → Next stage
+
+ArrowLeft → Previous stage
+
+Escape → Exit guided mode
+
+Implement these.
+
+Optional:
+
+J → Previous
+
+K → Next
+
+may remain as secondary shortcuts if already implemented.
+
+## Important
+
+Do not break existing mouse controls.
+
+The following buttons must continue working:
+
+[ BACK ]
+
+[ NEXT ]
+
+[ EXIT ]
+
+[ REPLAY ]
+
+Make sure keyboard listeners:
+
+* do not trigger while the user is typing inside the assembly editor
+* do not interfere with text input
+* do not cause browser scrolling unexpectedly
+* are cleaned up correctly when guided mode is unmounted
+
+Show the keyboard shortcuts somewhere subtle in the guided-mode UI, such as a small footer/help indicator:
+
+← Back
+→ Next
+Enter Next
+Esc Exit
+
+---
+
+# CHANGE 3 — UPGRADE THE ASSEMBLY EDITOR
+
+The current editor is visually good, but it behaves primarily like a textarea.
+
+Upgrade it into a proper code-editor experience.
+
+Use a lightweight editor library such as:
+
+CodeMirror
+
+or another suitable React-compatible code editor.
+
+Do NOT introduce Monaco unless there is a strong technical reason.
+
+The editor should support:
+
+* line numbers
+* monospace font
+* syntax highlighting
+* current-line highlighting
+* scrolling
+* cursor positioning
+* selection
+* readable indentation
+* error markers in the future
+* warning markers in the future
+
+## Syntax highlighting
+
+Create visual categories for the SysForge educational assembly language.
+
+### Directives
+
+START
+END
+ORIGIN
+EQU
+LTORG
+
+### Imperative instructions
+
+ADD
+SUB
+MULT
+MOVER
+MOVEM
+COMP
+BC
+DIV
+READ
+PRINT
+STOP
+
+### Declarative instructions
+
+DC
+DS
+
+### Registers
+
+AREG
+BREG
+CREG
+DREG
+
+### Condition codes
+
+LT
+LE
+EQ
+GT
+GE
+ANY
+
+### Literals
+
+='5'
+='1'
+='2'
+
+### Symbols / labels
+
+LOOP
+RESULT
+NEXT
+SUM
+VAR1
+
+The editor should visually distinguish these categories.
+
+Do not implement lexical analysis inside the editor.
+
+Syntax highlighting is purely a UI feature.
+
+The real Lexer will be implemented in the backend later.
+
+---
+
+# CHANGE 4 — REDESIGN AI ASSISTANT
+
+The current AI section feels more like "AI Lab Notes".
+
+Change the presentation to:
+
+# AI ASSISTANT
+
+The AI Assistant is an explanation and optimization layer.
+
+It is NOT the assembler.
+
+It is NOT the parser.
+
+It is NOT the linker.
+
+It is NOT the execution engine.
+
+The deterministic SysForge engine remains the source of truth.
+
+---
+
+## AI Assistant UI
+
+Create two tabs:
+
+[ EXPLAIN ]
+
+[ OPTIMIZE ]
+
+### EXPLAIN
+
+Provide suggested actions such as:
+
+Explain this token
+
+Explain this syntax error
+
+Explain this symbol
+
+Why was this symbol assigned this address?
+
+Explain this literal pool
+
+Explain this intermediate code
+
+Explain this machine instruction
+
+Explain this linker error
+
+Explain this memory location
+
+Explain this execution step
+
+The suggestions should be contextual to the current selected stage where possible.
+
+---
+
+# AI OPTIMIZE TAB
+
+Create an optimization analysis area.
+
+Example structure:
+
+AI OPTIMIZATION
+
+Analyze the current program for possible improvements.
+
+[ ANALYZE PROGRAM ]
+
+Then show:
+
+Optimization Opportunity #1
+
+Title:
+Redundant memory access
+
+Location:
+Line 7
+
+Explanation:
+...
+
+Potential impact:
+...
+
+Buttons:
+
+[ VIEW SOURCE ]
+
+[ APPLY OPTIMIZATION ]
+
+Another possible result:
+
+Optimization Opportunity #2
+
+...
+
+## Critical rule
+
+AI optimization suggestions must NOT automatically modify the source program.
+
+The user must explicitly click:
+
+[ APPLY OPTIMIZATION ]
+
+before any future source modification happens.
+
+For now, if the backend is not connected:
+
+show a clean state such as:
+
+"Optimization engine not connected yet."
+
+Do NOT generate fake optimization suggestions.
+
+---
+
+# CHANGE 5 — CORRECT PASS-I GUIDED VISUALIZATION
+
+This is an important educational correction.
+
+The sidebar may continue to have individual views for:
+
+Symbol Table
+Literal Table
+Pool Table
+Intermediate Code
+
+However, the **guided pipeline must NOT imply that these are separate assembler passes.**
+
+They are artifacts generated during Assembler Pass-I.
+
+The guided visualization should communicate:
+
+SOURCE STATEMENTS
+↓
+LOCATION COUNTER
+↓
+SYMBOL PROCESSING
+↓
+┌─────────────────────────────┐
+│       ASSEMBLER PASS-I      │
+├─────────────────────────────┤
+│                             │
+│  SYMTAB                     │
+│  LITTAB                     │
+│  POOLTAB                    │
+│  INTERMEDIATE CODE          │
+│                             │
+└─────────────────────────────┘
+↓
+ASSEMBLER PASS-II
+
+A more visual version is encouraged:
+
+```
+             PASS-I
+               │
+      ┌────────┼────────┐
+      ↓        ↓        ↓
+    SYMTAB   LITTAB   POOLTAB
+      └────────┼────────┘
+               ↓
+      INTERMEDIATE CODE
+               ↓
+             PASS-II
+```
+
+The sidebar can still expose each artifact individually.
+
+Do NOT remove those views.
+
+This is a visualization/labeling correction only.
+
+---
+
+# CHANGE 6 — UPDATE FINAL PIPELINE ORDER
+
+The project now includes actual program execution.
+
+Update the conceptual final pipeline to:
+
+SOURCE
+↓
+LEXER
+↓
+PARSER
+↓
+MACRO PROCESSOR
+↓
+ASSEMBLER PASS-I
+↓
+SYMTAB / LITTAB / POOLTAB / IC
+↓
+ASSEMBLER PASS-II
+↓
+OBJECT CODE
+↓
+LINKER
+↓
+LOADER
+↓
+MEMORY MAP
+↓
+AI ASSISTANT
+↓
+AI OPTIMIZATION
+↓
+PROGRAM EXECUTION
+↓
+PROGRAM OUTPUT
+↓
+FINAL RESULT
+
+The execution stage should come AFTER AI analysis/optimization.
+
+---
+
+# EXECUTION SCREEN
+
+Keep the existing Execution screen, but make sure it is clearly positioned as:
+
+## PROGRAM EXECUTION
+
+The execution system will eventually use a deterministic **Educational Virtual Machine** implemented by the backend.
+
+The frontend should NOT implement the actual execution algorithm.
+
+---
+
+# EXECUTION SCREEN STRUCTURE
+
+Use a professional debugger-style layout:
+
+LEFT:
+
+Source Code
+
+CENTER:
+
+Virtual CPU
+
+RIGHT:
+
+Memory
+
+BOTTOM:
+
+Program Output
+
+---
+
+## Virtual CPU
+
+Show:
+
+PC
+
+AREG
+
+BREG
+
+CREG
+
+DREG
+
+Condition Code
+
+Current Instruction
+
+Execution Status
+
+---
+
+## Controls
+
+Keep/create:
+
+[ RUN ]
+
+[ PAUSE ]
+
+[ STEP ]
+
+[ RESET ]
+
+[ STOP ]
+
+[ RESTART ]
+
+These buttons must be API-ready.
+
+For now, if execution backend does not exist:
+
+show an appropriate unavailable state.
+
+Example:
+
+"Execution engine not connected yet."
+
+Do not fake execution.
+
+---
+
+# EXECUTION TRACE
+
+Keep/create a table:
+
+Step
+PC
+Instruction
+AREG
+BREG
+CREG
+DREG
+Condition Code
+Memory Change
+Output
+
+This is a UI schema.
+
+Do not populate it with fake execution results.
+
+When the backend is eventually connected, it will provide the real execution trace.
+
+---
+
+# PROGRAM INPUT
+
+The educational assembly language supports:
+
+READ
+
+Therefore, the execution UI should have a place for runtime input.
+
+Example:
+
+PROGRAM INPUT
+
+[____________________]
+
+[ SUBMIT INPUT ]
+
+Only show this when the running program requests input.
+
+Do not implement fake input behavior.
+
+---
+
+# PROGRAM OUTPUT
+
+The execution console should be prominent.
+
+Example empty state:
+
+PROGRAM OUTPUT
+
+Waiting for program execution...
+
+When execution succeeds later, the backend will provide the actual output.
+
+Do NOT hard-code example output such as "5" or "6" into the production execution result.
+
+---
+
+# CHANGE 7 — FINAL RESULT / STAGE STATUS
+
+Update the Final Result screen to summarize the complete toolchain.
+
+The conceptual order is:
+
+Memory Map
+↓
+AI Analysis
+↓
+AI Optimization
+↓
+Execution
+↓
+Program Output
+↓
+Final Result
+
+The final result should contain:
+
+## ANALYSIS SUMMARY
+
+Source Status
+
+Lexical Analysis
+
+Syntax Analysis
+
+Macro Processing
+
+Assembler Pass-I
+
+Symbol Table
+
+Literal Table
+
+Pool Table
+
+Intermediate Code
+
+Assembler Pass-II
+
+Object Code
+
+Linker
+
+Loader
+
+Memory Map
+
+AI Analysis
+
+AI Optimization
+
+Execution
+
+Program Output
+
+Each item should have a status such as:
+
+● READY
+
+✓ COMPLETED
+
+◌ IN PROGRESS
+
+⚠ ERROR
+
+🔒 NOT AVAILABLE
+
+## IMPORTANT
+
+Do NOT mark a stage as completed simply because the UI exists.
+
+Completion must eventually be based on backend analysis state.
+
+Until backend integration exists, use:
+
+NOT IMPLEMENTED
+
+WAITING
+
+or
+
+NOT CONNECTED
+
+as appropriate.
+
+---
+
+# ADDITIONAL CONSISTENCY IMPROVEMENTS
+
+While making the above changes, perform a small consistency pass.
+
+Do NOT redesign the application.
+
+Check:
+
+## Naming
+
+Use:
+
+AI Assistant
+
+not:
+
+AI Lab Notes
+
+Use:
+
+Program Execution
+
+not generic:
+
+Run
+
+Use:
+
+Assembler Pass-I
+
+Assembler Pass-II
+
+Use:
+
+Symbol Table
+
+Literal Table
+
+Pool Table
+
+Intermediate Code
+
+Object / Machine Code
+
+Linker
+
+Loader
+
+Memory Map
+
+---
+
+# API ARCHITECTURE — DO NOT BREAK
+
+Preserve the existing API abstraction.
+
+Do NOT place backend logic inside React components.
+
+Keep API calls centralized in the existing service layer.
+
+Future endpoints will eventually provide:
+
+/api/analyze
+
+/api/lex
+
+/api/parse
+
+/api/macro
+
+/api/assemble/pass1
+
+/api/assemble/pass2
+
+/api/link
+
+/api/load
+
+/api/memory
+
+/api/execute
+
+/api/ai/explain
+
+/api/ai/optimize
+
+The exact routes may later be adjusted by the backend engineer.
+
+The frontend should remain easy to connect to FastAPI.
+
+---
+
+# MOCK DATA POLICY
+
+Do NOT remove useful existing mock data if it is required to demonstrate the UI.
+
+However:
+
+Clearly isolate mock/demo data.
+
+Never present mock compiler results as real analysis results.
+
+If a stage has no backend result:
+
+show an honest state such as:
+
+"Algorithm not implemented yet."
+
+"Waiting for backend analysis."
+
+"Execution engine not connected."
+
+---
+
+# DO NOT IMPLEMENT
+
+Do NOT implement:
+
+* Lexer algorithm
+* Parser algorithm
+* Pass-I algorithm
+* Pass-II algorithm
+* Real SYMTAB generation
+* Real LITTAB generation
+* Real POOLTAB generation
+* Real IC generation
+* Real machine-code generation
+* Real linker
+* Real loader
+* Real relocation
+* Real memory execution
+* Real AI optimization engine
+
+These will be implemented later in the FastAPI/System Programming Engine backend.
+
+---
+
+# PRESERVE
+
+Do not remove or substantially redesign:
+
+* Graphite Electric theme
+* Sidebar
+* Header
+* Pipeline
+* Source editor layout
+* Existing stage pages
+* Existing responsive behavior
+* Existing animations
+* Existing API abstraction
+* Existing empty/error states
+
+The purpose of this task is refinement, not rebuilding.
+
+---
+
+# CODE QUALITY REQUIREMENTS
+
+After making changes:
+
+1. Run the application.
+2. Check all routes.
+3. Check guided mode.
+4. Test ArrowRight.
+5. Test ArrowLeft.
+6. Test Enter.
+7. Test Escape.
+8. Confirm keyboard shortcuts do not interfere with text editing.
+9. Confirm the source editor works.
+10. Confirm the AI Assistant opens correctly.
+11. Confirm Optimize tab works as a UI state.
+12. Confirm Execution screen works as a UI state.
+13. Confirm no fake backend results appear.
+14. Confirm no TypeScript errors.
+15. Confirm no console errors.
+16. Confirm no broken imports.
+17. Confirm responsive layout.
+18. Confirm the existing visual identity has not been degraded.
+
+---
+
+# FINAL REQUIREMENT
+
+At the end of this task, provide a concise implementation summary:
+
+1. Files changed
+2. Components changed
+3. New dependencies added
+4. Keyboard shortcuts implemented
+5. Execution UI changes
+6. AI Assistant changes
+7. Pass-I visualization changes
+8. Any issues that remain
+
+Do NOT begin implementing backend algorithms.
+
+The result should be a polished, stable, API-ready frontend that can be handed over to the backend engineering agent.
+
+The next development phase will be:
+
+React/Vite Frontend
+↓
+FastAPI
+↓
+Deterministic SysForge Engine
+↓
+Lexer
+↓
+Parser
+↓
+Macro Processor
+↓
+Assembler Pass-I
+↓
+SYMTAB/LITTAB/POOLTAB/IC
+↓
+Assembler Pass-II
+↓
+Object Code
+↓
+Linker
+↓
+Loader
+↓
+Memory
+↓
+AI Explanation / Optimization
+↓
+Educational Virtual Machine
+↓
+Program Output
+
+**Do not implement that backend now.**
+
+Focus exclusively on completing the frontend refinement described above.
